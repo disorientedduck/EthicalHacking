@@ -1,0 +1,87 @@
+1. Environment Setup
+
+Tasks Completed:
+
+Kali Linux Installation:
+
+  * Successfully installed Kali Linux using VirtualBox on a Windows host machine.
+  * Allocated 4GB RAM, 2 CPU cores, and 40GB virtual storage for optimal performance.
+  * Verified the installation by updating system repositories and installing key packages.
+
+Basic Linux Command Line Usage:
+
+    * ls, cd, mkdir, rm, touch, cat, cp, mv
+    * apt update && apt upgrade for system maintenance
+    * Navigated file system structure and permissions (chmod, chown, ls -l)
+
+Secure Lab Setup with Metasploitable2:
+
+  * Installed Metasploitable2 on VirtualBox alongside Kali Linux.
+  * Set both VMs to use Host-Only Adapter to isolate them from external networks while allowing inter-VM communication.
+  * Verified connectivity using ping and ifconfig from within both machines.
+
+
+
+2. Networking Basics
+
+Key Concepts Studied:
+
+Understanding Protocols and Services:
+
+    * IP Addresses (IPv4), MAC Addresses, DNS, DHCP, and TCP/IP stack.
+    * Port ranges (0-1023 = well-known ports) and common service ports (e.g., 22 for SSH, 80 for HTTP).
+
+Tools and Their Usage:
+
+  * ifconfig / ip a – to view and configure network interfaces.
+  * ping – to test network connectivity.
+  * netstat – to view open connections and listening ports.
+  * traceroute – to map network paths.
+  * nmap – to scan hosts and discover open ports/services.
+
+Packet Analysis:
+
+  * Installed and used **Wireshark** to capture network traffic.
+  * Identified basic packet structures including headers (Ethernet, IP, TCP/UDP).
+  * Tracked a DNS query from initiation to response to understand the resolution process.
+
+
+3. Footprinting and Reconnaissance
+
+Passive Reconnaissance:
+
+  Used tools like:
+
+    * whois – to gather domain registration data.
+    * nslookup – to fetch DNS records.
+    * theHarvester – to scrape emails, hosts, and open source data.
+    * Shodan.io – to explore exposed internet-connected devices.
+
+Active Reconnaissance:
+
+  * Performed targeted **Nmap scans** on Metasploitable2 to discover:
+
+    * Open ports (e.g., 21, 22, 23, 80)
+    * Services running on those ports
+    * Possible OS fingerprinting
+
+4. Hands-On Tasks
+
+Nmap Scan:
+
+  * Conducted a basic scan using:
+    nmap -sS 192.168.56.102
+    * Discovered multiple open ports and services on the Metasploitable2 target.
+
+Wireshark Packet Capture:
+
+  * Captured traffic between Kali and Metasploitable2 while performing Nmap scan.
+  * Analyzed packet flow, including:
+
+    * TCP SYN, SYN-ACK, and ACK flags
+    * ICMP echo requests
+    * Service banners during connection attempts
+
+Conclusion:
+
+The lab setup and exercises provided foundational hands-on experience in cybersecurity and ethical hacking. I have successfully built a safe and functional testing environment using VirtualBox, Kali Linux, and Metasploitable2. Through practical use of essential networking tools and reconnaissance techniques, I have developed a better understanding of how attackers might map a network—knowledge crucial for defending it.

